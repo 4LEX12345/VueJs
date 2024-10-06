@@ -1,19 +1,39 @@
 import AssignmentListComponent from "./AssignmentListComponent.js";
+import AssignmentFormComponent from "./AssignmentFormComponent.js";
 
 export default{
-    components : {AssignmentListComponent},
+    components : {AssignmentListComponent,AssignmentFormComponent},
     template : `
-    <assignment-list-component :assignments="filter.inProgress" title="In Progress"></assignment-list-component>
-    <assignment-list-component :assignments="filter.compeleted" title="Completed"></assignment-list-component>
+        <section class="flex gap-8"> 
+            <assignment-list-component :assignments="filter.inProgress" title="In Progress">
+                <assignment-form-component @add="add"></assignment-form-component>
+            </assignment-list-component>
+
+            <Transition>
+                <assignment-list-component 
+                    v-if="!isToggled" 
+                    :assignments="filter.compeleted" 
+                    title="Completed" 
+                    can-toggle
+                    @toggle="isToggled = ! isToggled"
+                >
+                </assignment-list-component>
+            </Transition>
+           
+        </section>
     `,
 data(){
     return {
-        assignments : [
-            {name : 'Finish Project', complete : false, id : 1},
-            {name : 'Read Chapter 4', complete : false, id : 2},
-            {name : 'Turn in homework', complete : false, id : 3},
-        ]
+        assignments : [],
+        isToggled : false,
     }
+},
+created(){
+    fetch('http://localhost:3001/assignments')
+        .then(response => response.json())
+        .then(data => {
+            this.assignments = data;
+        })
 },
 computed : {
     filter(){
@@ -23,4 +43,13 @@ computed : {
         }
     }
 },
+methods: {
+    add(name){
+        this.assignments.unshift({
+            name : name,
+            complete : false,
+            id : this.assignments.length + 1,
+        });
+    }
+}
 }

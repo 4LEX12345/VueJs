@@ -1,0 +1,22 @@
+npm install json-server --save-dev //this will install a server on your source file
+npx json server //just show all the commands/options
+
+--create a fake database (API FOR TESTING)
+create db.json file on your source folder
+create a array in json format
+
+//run the server
+npx json-server db.json -p 3001 //-p is the port you want to use
+
+
+*if you want to make this on one run use this*
+open package.json on your source file
+add this 
+
+"scripts" :{
+	"start" : "npx serve & npx json-server db.json -p 3001"
+}
+
+run npm run start
+
+*note - this will run both npx serve and npx json-server db.json -p 3001 simultanously
